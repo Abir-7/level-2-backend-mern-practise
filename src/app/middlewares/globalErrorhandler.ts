@@ -11,7 +11,6 @@ import handleZodError from '../errors/handleZodError';
 import { TErrorSources } from '../interface/error';
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  console.log(err.statusCode);
   //setting default values
   let statusCode = 500;
   let message = 'Something went wrong!';
@@ -52,6 +51,9 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
       },
     ];
   } else if (err instanceof Error) {
+    if (err.message == 'jwt expired') {
+      statusCode = 401;
+    }
     message = err.message;
     errorSources = [
       {
@@ -61,7 +63,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     ];
   }
 
-  //ultimate return
+  //ultimate returnbv
   return res.status(statusCode).json({
     success: false,
     message,
